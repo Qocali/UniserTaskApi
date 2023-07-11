@@ -2,7 +2,6 @@ using Application.Interface.Repository;
 using Application.Interface.Service;
 using AutoMapper;
 using FluentValidation;
-using infrastructure.DAL;
 using infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +17,10 @@ using Microsoft.AspNetCore.Identity;
 using Task.Application.Validation;
 using Task.Rest.Api.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Task.Rest.Api.Health;
+using Microsoft.AspNetCore.Builder;
+using System.Data;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,10 +33,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITaskRepo,TaskRepo>();
 builder.Services.AddScoped<ITaskService,TaskService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<AppDbContext>((option) =>
-{
-    option.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-});
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Register the PostgreSQL connection
+builder.Services.AddScoped<IDbConnection>(provider => new NpgsqlConnection(connectionString));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -71,6 +74,8 @@ builder.Services.AddCors(options =>
                           policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                       });
 });
+builder.Services.AddHealthChecks()
+    .AddCheck<MyHealthCheck>("my-health-check");
 
 builder.Services.AddScoped<ActioFilter>();
 var app = builder.Build();

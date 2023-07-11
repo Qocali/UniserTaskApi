@@ -1,7 +1,6 @@
 ﻿using Application.Interface.Repository;
 using Application.Interface.Service;
 using Domain.Domain.Entities;
-using infrastructure.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +18,7 @@ namespace Task.infrastructure.Services
         }
         async public void Create(Tasks entity)
         {
-            _taskRepo.Create(entity);
-            _taskRepo.Savachange();
+            _taskRepo.CreateAsync(entity);
         }
 
         public void Delete(int? id)
@@ -31,8 +29,7 @@ namespace Task.infrastructure.Services
         public void Edit(int? Id, Tasks entity)
         {
           _taskRepo.Edit(Id);
-            _taskRepo.Create(entity);
-            _taskRepo.Savachange();
+            _taskRepo.CreateAsync(entity);
         }
 
         public async Task<Tasks> Get(int? id)

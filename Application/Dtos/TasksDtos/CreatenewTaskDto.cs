@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,11 +12,7 @@ namespace Application.Dtos.Tasks
         public int id { get; set; }
         public string TaskName { get; set; }
         public string Work { get; set; }
-        public DateTime Deadline { get; set; }
-        public string DrugName { get; set; }
-        public string Infect { get; set; }
-        public Decimal Usedvolumefor1l { get; set; }
         public string FeatureName { get; set; }
-        public int SubjectId { get; set; }
+        public DateTime Deadline { get; set; }
     }
 }

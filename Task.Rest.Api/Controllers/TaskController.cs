@@ -31,15 +31,12 @@ namespace Task.Rest.Api.Controllers
         public async Task<IActionResult> GetTask(int id)
         {
             var task = _mediator.Send(new GetTaskQuery(id));
-            throw new Exception("Resolve Error");
             return Ok(_mapper.Map<GetTaskDto>(task));
         }
         [HttpPost]
         public async Task<IActionResult> CreateTaskAsync(CreatenewTaskDto task)
         {
             var data = _mapper.Map<Tasks>(task);
-            var data2 = _mapper.Map<DrugList>(task);
-            var data3 = _mapper.Map<Instruments>(task);
             _mediator.Send(new CreatetaskCommand { Deadline=task.Deadline,Work=task.Work});
             var taskread = _mapper.Map<GetTaskDto>(data);
             return Accepted(taskread);

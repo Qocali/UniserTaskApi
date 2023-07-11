@@ -1,46 +1,49 @@
 ﻿using Application.Interface.Repository;
 using Domain.Domain.Entities;
-using infrastructure.DAL;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Task.Domain.Domain.Entities;
+using Dapper;
 namespace infrastructure.Repository
 {
     public class TaskRepo : ITaskRepo
     {
-        private readonly AppDbContext _Db;
-        public TaskRepo(AppDbContext Db)
+        private readonly IDbConnection _dbConnection;
+
+        public TaskRepo(IDbConnection dbConnection)
         {
-            _Db= Db;
+            _dbConnection = dbConnection;
         }
-        public void Create(Tasks entity)
+
+        public async Task<Tasks> Get(int? id)
         {
-            _Db.Tasks.Add(entity);
+            string query = "SELECT * FROM Tasks WHERE TaskNumberId = @TaskNumberId";
+            return await _dbConnection.QueryFirstOrDefaultAsync<Tasks>(query, new { TaskNumberId = id });
+        }
+
+        public void CreateAsync(Tasks entity)
+        {
+            string query = @"INSERT INTO Tasks (TaskName, Work, FeatureName, Deadline)
+                         VALUES (@TaskName, @Work, @FeatureName, @Deadline)";
+            _dbConnection.Execute(query, entity);
+        }
+
+        public void Edit(int? id)
+        {
+            // Implement edit logic
         }
 
         public void Delete(int? id)
         {
-            var task = _Db.Tasks.FirstOrDefault(x => x.TaskNumberId == id);
-            _Db.Tasks.Remove(task); ;
+            string query = "DELETE FROM Tasks WHERE TaskNumberId = @TaskNumberId";
+            _dbConnection.Execute(query, new { TaskNumberId = id });
         }
 
-        public async void Edit(int? Id)
-        {
-            var task = _Db.Tasks.FirstOrDefault(x => x.TaskNumberId == Id);
-            task.TaskNumberId = (int)Id;
-            _Db.Tasks.Remove(task);
- }
 
-        public async Task<Tasks> Get(int? id)
-        {
-           var task= _Db.Tasks.FirstOrDefault(x=>x.TaskNumberId==id);
-            return task;
-        }
-
-        public void Savachange()
-        {
-            _Db.SaveChanges();
-        }
+       
     }
 }

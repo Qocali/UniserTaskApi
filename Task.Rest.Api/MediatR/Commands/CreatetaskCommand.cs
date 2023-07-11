@@ -9,7 +9,7 @@ namespace Task.Rest.Api.MediatR.Commands
         public int TaskNumberId { get; set; }
         public string TaskName { get; set; }
         public string Work { get; set; }
-        public string Subject { get; set; }
+        public string FeatureName { get; set; }
         public DateTime Deadline { get; set; }
     }
 }

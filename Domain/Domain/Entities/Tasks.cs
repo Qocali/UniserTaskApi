@@ -13,10 +13,7 @@ namespace Domain.Domain.Entities
         public int TaskNumberId { get; set; }
         public string TaskName { get; set; }
         public string Work { get; set; }
-        public int SubjectId { get; set; }
         public string FeatureName { get; set; }
         public DateTime Deadline { get; set; }
-        public List<DrugList> Druglist { get; set; }
-        public List<Instruments> Instruments { get; set; }
     }
 }
